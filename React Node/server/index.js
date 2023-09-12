@@ -1,13 +1,12 @@
 const express = require('express');
-const graphqlHTTP  = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
+const cors  = require("cors");
 
 var schema = buildSchema(`
-
     type Client {
         id: Int
         name: String
-        number: String
     }
     type Query {
         clients: [Client]
@@ -18,12 +17,27 @@ var schema = buildSchema(`
     }
 `);
 
-var clients = []
-var counter = 1
+let clients = [
+    'Maths',
+    'Spanish',
+    'History',
+    'Geography',
+    'Biology',
+    'Art'
+]
+
+let classes = []
+
+for (let i = 0; i < clients.length; i++) {
+    const element = {'id': i , 'name': clients[i]};
+    classes.push(element)
+}
+
+var counter = 6
 
 var root =  {
-    clients : () => { return clients },
-
+    clients : () => { return classes },
+ 
     client : (data) => {
         for (let i = 0; i < clients.length; i++) {
             if (clients[i].id == data.id) {
@@ -34,7 +48,7 @@ var root =  {
     },
 
     addClient: (data) => {
-        var c = { 'id':counter, 'name':data.name, 'number': data.number };
+        var c = { 'id':counter, 'name':data.name };
         clients.push(c)
         counter ++;
         return c;
@@ -43,12 +57,30 @@ var root =  {
 
 const app = express();
 
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true,
-}));
+app.use(cors());
+app.use(express.json());
+
+// Importar AuthService
+//const authService = require("./modules/authService");
+
+app.use(
+    '/graphql',
+    graphqlHTTP({
+      schema: schema,
+      graphiql: true,
+      rootValue: root,
+    }),
+  )
+
 
 app.listen(3001, ()=>{
     console.log("Server listening port 3001")
 })
+
+app.post("/graphql", (req, res) => {
+    let query = req.body.query;
+    console.log(query)
+    graphql(schema, query).then(result => {
+      res.json(result);
+    });
+  });
