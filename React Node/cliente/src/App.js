@@ -1,9 +1,7 @@
 import './App.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-
-//Usar Axios.post("htpp://localhost:3001/pedido", objeto) puedo usar then o await, si no quiero pasar nada directamente no pongo objeto
 import Navigation from './components/Navigation'
 import ListGroup from './components/ListGroup'
 import Home from './components/Home'
@@ -11,16 +9,22 @@ import NewListGroup from './components/NewListGroup';
 import ProfilePage from './components/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Detail from './components/Detail';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(null)
 
-  const signin = () => {
-    setIsSignedIn(true)
-  }
-  const signout = () => {
-    setIsSignedIn(false)
-  }
+  useEffect(() => {
+    const value = window.localStorage.getItem("user");
+    console.log(value)
+    if (value) {
+        setIsSignedIn(true)
+    } else {
+        setIsSignedIn(false)
+    }
+})
+
 
   return (
     <Router>
@@ -30,6 +34,8 @@ function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/list' element={<ListGroup/>} />
         <Route path='/newList' element={<NewListGroup/>} />
+        <Route path='/login' element={<Login/>} />
+        <Route path='/register' element={<Register/>} />
         <Route path='/detail/:id/:type' element={<Detail/>}/>
         <Route
         path="/profile"
@@ -41,23 +47,9 @@ function App() {
       />
       </Routes>
 
-      {isSignedIn ? (
-          <div className="d-grid mt-5">
-            <button className="btn-danger" onClick={signout}>
-              Sign out
-            </button>
-          </div>
-        ) : (
-          <div className="d-grid mt-5">
-            <button className="btn-dark" onClick={signin}>
-              Sign in
-            </button>
-          </div>
-        )}
-
+      
     </Router>
   );
 }
-
 
 export default App;

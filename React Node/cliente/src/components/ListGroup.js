@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
 
-/*interface Props {
-    items: string[];
-    heading: String;
-}*/
 
 let classes = [
     'Maths',

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-
 const options = {
     method: 'GET',
     headers: {
@@ -10,15 +9,14 @@ const options = {
     }
 };
 
-
 function Detail() {
     const [info, setInfo] = useState();
     const params = useParams()
     let url = ""
-    
+
     useEffect(() => {
         if (params.type == "Movie") {
-            url = `https://api.themoviedb.org/3/movie/${params.id}?language=en-US`;            
+            url = `https://api.themoviedb.org/3/movie/${params.id}?language=en-US`;
         } else {
             url = `https://api.themoviedb.org/3/tv/${params.id}?language=en-US`;
         }
@@ -30,19 +28,24 @@ function Detail() {
             })
             .catch(err => console.error('error:' + err));
 
-    },[])
+    }, [])
 
-    
-    return(
+
+    return (
         <>
-            {info != undefined &&    <>
-                <h1>{info.name}</h1>
-                <h2>{params.type} - {info.first_air_date}</h2>
-                <img  src={"https://image.tmdb.org/t/p/original/" + info.backdrop_path} id={info.id} className="card-img-top"></img>
-                </>
+            {info != undefined && <>
+                <div className="container">
+                    {info.name != undefined && <h1>{info.name}</h1>}
+                    {info.original_title != undefined && <h1>{info.original_title}</h1>}
+                    <h3>{params.type} - {info.first_air_date != undefined && info.first_air_date} {info.release_date != undefined && info.release_date}</h3>
+                    <img src={"https://image.tmdb.org/t/p/original/" + info.backdrop_path} id={info.id} className="card-img-top"></img>
+                    <p>{info.overview}</p>
+                </div>
+
+            </>
             }
         </>
-    ) 
+    )
 }
 
 export default Detail;

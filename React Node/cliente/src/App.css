@@ -1,0 +1,22 @@
+/*#star {
+    position: absolute;
+    display: block;
+    padding: 40vh 48vw;
+    fill: #CDCDCD;
+    transition: fill 200ms;
+    z-index: 1;
+  }*/
+  
+  .star.active {
+    fill : #FFA600  !important;
+    animation: fav 600ms ease;
+  }
+  
+  @keyframes fav {
+    70% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
