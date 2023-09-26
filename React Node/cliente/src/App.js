@@ -17,11 +17,11 @@ function App() {
     const value = window.localStorage.getItem("user");
     console.log(value)
     if (value) {
-        setIsSignedIn(true)
+      setIsSignedIn(true)
     } else {
-        setIsSignedIn(false)
+      setIsSignedIn(false)
     }
-})
+  },[])
 
 
   return (
@@ -29,21 +29,14 @@ function App() {
       <Navigation />
 
       <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/login' element={<Login/>} />
-        <Route path='/register' element={<Register/>} />
-        <Route path='/detail/:id/:type' element={<Detail/>}/>
-        <Route
-        path="/profile"
-        element={
-          <ProtectedRoute isSignedIn={isSignedIn}>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/detail/:id/:type' element={<Detail />} />
+        <Route path="/profile" element={ <ProfilePage />}/>
       </Routes>
 
-      
+
     </Router>
   );
 }

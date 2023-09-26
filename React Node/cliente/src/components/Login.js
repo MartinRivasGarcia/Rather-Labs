@@ -38,7 +38,6 @@ function Login() {
                     } else {
                         alert("Data incorrect")    
                     }
-                 
                 })
                 .catch(err => {
                     console.log(err.message);

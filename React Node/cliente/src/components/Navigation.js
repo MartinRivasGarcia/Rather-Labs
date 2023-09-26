@@ -18,7 +18,7 @@ function Navigation() {
             setIsSignedIn(true)
         } else {
             setIsSignedIn(false)
-            
+
         }
     })
 
@@ -35,31 +35,40 @@ function Navigation() {
     return (
         <>
             <div className="container-fluid dark-theme header">
-                        <Link className="navbar-brand" to="/">
-                            Home
-                        </Link>
-                        
+                <Link className="navbar-brand" to="/">
+                    Home
+                </Link>
+
+
+                {isSignedIn ? (
+                    <>
                         <Link className="navbar-brand" to="/profile">
                             ProfilePage
                         </Link>
+                        <div className="navbar-brand">
+                            <button className="btn-danger" onClick={signout}>
+                                Sign out
+                            </button>
+                        </div>
+                    </>
 
-                        {isSignedIn ? (
-                            <div className="navbar-brand">
-                                <button className="btn-danger" onClick={signout}>
-                                    Sign out
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="navbar-brand">
-                                <button className="btn-dark" onClick={signin}>
-                                    Sign in
-                                </button>
-                            </div>
-                        )}
+                ) : (
+                    <>
+                        <Link className="navbar-brand" to="/login">
+                            ProfilePage
+                        </Link>
+                        <div className="navbar-brand">
+                            <button className="btn-dark" onClick={signin}>
+                                Sign in
+                            </button>
+                        </div>
+                    </>
+
+                )}
 
             </div>
 
-            
+
         </>
     );
 }

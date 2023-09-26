@@ -34,8 +34,12 @@ function Register() {
             })
                 .then(res => {
                     console.log(res.data);
-                    window.localStorage.setItem("user", JSON.stringify(res.data.uid))
-                    navigate('/');
+                    if (res.data.res) {
+                        window.localStorage.setItem("user", JSON.stringify(res.data.uid))
+                        navigate('/')       
+                    } else {
+                        alert("Data incorrect")    
+                    }   
                 })
                 .catch(err => {
                     console.log(err.message);
@@ -52,7 +56,7 @@ function Register() {
                     <h2>Register</h2>
                 </div>
                 <div className="mb-3 form-group">
-                    <label htmlFor="emailId" className="form-label">Usuario</label>
+                    <label htmlFor="emailId" className="form-label">Email</label>
                     <input type="text" className="form-control" required id="emailId" name="email" placeholder="Enter your email" />
                 </div>
                 <div className="mb-3 form-group">

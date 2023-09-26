@@ -138,7 +138,7 @@ app.post("/register", async (req, res) => {
 
         await MySQL.query(`INSERT INTO Users (id, mail, FirstName) VALUES ('${req.session.uid}','${email}', '${name}');`)
 
-        res.send({ res: true })
+        res.send({ res: true, uid: userCredential.user.uid })
     } catch (error) {
         console.error("Error en el registro:", error);
         res.send({ res: false })
