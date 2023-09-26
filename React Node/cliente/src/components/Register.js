@@ -1,20 +1,17 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const apiUrl = require('../modules/constants').apiUrl;
-const queries = require('../modules/constants').queries;
-
 function Register() {
     const navigate = useNavigate()
 
     const handleClick = (event) => {
         console.log(event.target)
 
-        if (document.getElementById("emailId").value == "") {
+        if (document.getElementById("emailId").value === "") {
             document.getElementById("emailId").focus()
             alert("Empty email")
         }
-        else if (document.getElementById("passwordId").value == "") {
+        else if (document.getElementById("passwordId").value === "") {
             document.getElementById("passwordId").focus()
             alert("Empty password")
         }
@@ -22,27 +19,30 @@ function Register() {
             document.getElementById("passwordId").focus()
             alert("Password should be at least 6 characters")
         }
-        else if (document.getElementById("userId").value == "") {
+        else if (document.getElementById("userId").value === "") {
             document.getElementById("userId").focus()
             alert("Empty user")
+        } else {
+            axios({
+                url: 'http://localhost:3001/register',
+                method: 'post',
+                data: {
+                    email: document.getElementById("emailId").value,
+                    password: document.getElementById("passwordId").value,
+                    name: document.getElementById("userId").value,
+                }
+            })
+                .then(res => {
+                    console.log(res.data);
+                    window.localStorage.setItem("user", JSON.stringify(res.data.uid))
+                    navigate('/');
+                })
+                .catch(err => {
+                    console.log(err.message);
+                });
         }
 
-        axios({
-            url: 'http://localhost:3001/register',
-            method: 'post',
-            data: {
-                email: document.getElementById("emailId").value,
-                password: document.getElementById("passwordId").value,
-                name: document.getElementById("userId").value,
-            }
-        })
-            .then(res => {
-                console.log(res.data);
-                navigate('/newList');
-            })
-            .catch(err => {
-                console.log(err.message);
-            });
+
     }
 
     return (

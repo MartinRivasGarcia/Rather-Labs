@@ -18,7 +18,7 @@ function Navigation() {
             setIsSignedIn(true)
         } else {
             setIsSignedIn(false)
-            navigate('/newList')
+            
         }
     })
 
@@ -29,22 +29,18 @@ function Navigation() {
     const signout = () => {
         localStorage.removeItem("user");
         setIsSignedIn(false)
+        navigate('/')
     }
 
     return (
         <>
-            <div className="container">
-                <nav className="navbar bg-body-tertiary">
-                    <div className="container-fluid">
+            <div className="container-fluid dark-theme header">
                         <Link className="navbar-brand" to="/">
                             Home
                         </Link>
                         
                         <Link className="navbar-brand" to="/profile">
                             ProfilePage
-                        </Link>
-                        <Link className="navbar-brand" to="/newList">
-                            Movies and TV Shows
                         </Link>
 
                         {isSignedIn ? (
@@ -61,9 +57,9 @@ function Navigation() {
                             </div>
                         )}
 
-                    </div>
-                </nav>
             </div>
+
+            
         </>
     );
 }

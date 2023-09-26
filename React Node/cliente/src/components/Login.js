@@ -9,24 +9,42 @@ function Login() {
     const navigate = useNavigate()
 
     const handleClickLogin = (event) => {
-        console.log(event.target)
-
-        axios({
-            url: 'http://localhost:3001/login',
-            method: 'POST',
-            data: {
-                email: document.getElementById("userId").value,
-                password: document.getElementById("passwordId").value
-            }
-        })
-            .then(res => {
-                console.log(res.data);
-                window.localStorage.setItem("user", JSON.stringify(res.data.uid))
-                navigate('/newList')
+        if (document.getElementById("userId").value === "") {
+            document.getElementById("userId").focus()
+            alert("Empty email")
+        }
+        else if (document.getElementById("passwordId").value === "") {
+            document.getElementById("passwordId").focus()
+            alert("Empty password")
+        }
+        else if (document.getElementById("passwordId").value.length < 6) {
+            document.getElementById("passwordId").focus()
+            alert("Password should be at least 6 characters")
+        }
+        else {
+            axios({
+                url: 'http://localhost:3001/login',
+                method: 'POST',
+                data: {
+                    mail: document.getElementById("userId").value,
+                    password: document.getElementById("passwordId").value
+                }
             })
-            .catch(err => {
-                console.log(err.message);
-            });
+                .then(res => {
+                    console.log(res.data);
+                    if (res.data.res) {
+                        window.localStorage.setItem("user", JSON.stringify(res.data.uid))
+                        navigate('/')       
+                    } else {
+                        alert("Data incorrect")    
+                    }
+                 
+                })
+                .catch(err => {
+                    console.log(err.message);
+                    alert("Data incorrect")
+                });
+        }
     }
 
     const handleClickRegister = (event) => {

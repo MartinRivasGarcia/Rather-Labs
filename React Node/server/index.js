@@ -147,8 +147,16 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
     try {
-        const { email, password } = req.body
-        
+        const { mail, password } = req.body
+        let user = mail
+        console.log(req.body)
+        console.log(mail)
+        if (! mail.includes('@')) {
+           user = await MySQL.query(`SELECT mail FROM Users WHERE FirstName = '${mail}'`)
+           user = user[0].mail
+           console.log(user)
+        }
+        const email = user
         const userCredential = await authService.loginUser(auth, {
             email,
             password,

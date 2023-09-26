@@ -20,3 +20,30 @@
       transform: scale(1);
     }
   }
+
+  .dark-theme {
+    --primary-text: white;
+    --text-color: white;
+    --border-color: rgb(58, 58, 60);
+    --background: rgb(34, 34, 34);
+    --hover-background: rgb(226, 232, 240);
+    --color-correct: #009c51; 
+    --color-present: #cc9748;
+    --color-absent: rgb(58, 58, 60);
+    --color-incorrect: #bd3f3f;
+    --square-color: rgb(36, 36, 36);
+}
+
+.header {
+    min-height: 75px;
+    height: 75px;
+    color: var(--primary-text);
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+}
