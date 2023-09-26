@@ -8,6 +8,7 @@ function ProfilePage() {
     const [totalShows, setTotalShows] = useState([]);
     const [movies, setMovies] = useState([]);
     const [totalMovies, setTotalMovies] = useState([]);
+    const [favorites, setFavorites] = useState([])
     const [user, setUser] = useState("");
     const navigate = useNavigate()
 
@@ -28,33 +29,33 @@ function ProfilePage() {
         fetch(urlShows, options)
             .then(res => res.json())
             .then(json => {
-                console.log(json)
-                console.log(json.results)
                 setTotalShows(json.results)
                 setShows(json.results)
-                console.log(totalShows)
-                loadMovies()
             })
             .catch(err => console.error('error:' + err));
 
-        const loadMovies = () => {
-            fetch(url, options)
-                .then(res => res.json())
-                .then(json => {
-                    console.log(json)
-                    console.log(json.results)
-                    setTotalMovies(json.results)
-                    setMovies(json.results)
-                    console.log(totalMovies)
-                    if (totalMovies != []) {
-                        loadFavorites()    
-                    }
-                    
-                })
-                .catch(err => console.error('error:' + err));
-        }
 
-        
+        fetch(url, options)
+            .then(res => res.json())
+            .then(json => {
+                setTotalMovies(json.results)
+                setMovies(json.results)
+            })
+            .catch(err => console.error('error:' + err));
+
+        Axios.get('http://localhost:3001/favorites', {
+            params: {
+                user: value
+            }
+        }).then(function (res) {
+            console.log(res.data.data)
+            setFavorites(res.data.data)
+        })
+            .catch(function (error) {
+
+            })
+
+
     }, [])
 
 
@@ -72,47 +73,6 @@ function ProfilePage() {
         navigate('/detail/' + event.target.id + '/Movie')
     }
 
-    const loadFavorites = () => {
-        const value = window.localStorage.getItem("user");
-        Axios.get('http://localhost:3001/favorites', {
-            params: {
-                user: value
-            }
-        }).then(function (res) {
-            console.log(res.data.data)
-            let searchShows = []
-            let searchMovies = []
-            for (let j = 0; j < res.data.data.length; j++) {
-                for (let i = 0; i < totalShows.length; i++) {
-                    const favorite = res.data.data[j];
-                    const element = totalShows[i];
-                    if (favorite.type == "tv") {
-                        if (element.id == favorite.id) {
-                            searchShows.push(element)
-                        }
-                    }
-                }
-                for (let i = 0; i < totalMovies.length; i++) {
-                    const favorite = res.data.data[j];
-                    const element = totalMovies[i];
-                    if (favorite.type != "tv") {
-                        if (element.id == favorite.id) {
-                            searchMovies.push(element)
-                        }
-                    }
-                }
-            }
-            console.log(totalMovies)
-            console.log(totalShows)
-            console.log(searchShows)
-            console.log(searchMovies)
-            setShows(searchShows)
-            setMovies(searchMovies)
-        })
-            .catch(function (error) {
-
-            })
-    }
 
     const handleClickStar = (event) => {
         var star = event.target;
@@ -147,45 +107,51 @@ function ProfilePage() {
         <div className="container">
             <div className="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
                 {shows.map((item, index) => (
-                    <div className="col-sm-6 mb-3 mb-sm-0" key={item.id}>
+                    favorites.map((fav, i) => (
+                        fav.id === item.id && fav.type == "tv" && (
+                            <div className="col-sm-6 mb-3 mb-sm-0" key={item.id}>
 
-                        <div id={item.id} key={item.name} className="card border-dark mb-3">
-                            <img onClick={handleClickTv} src={"https://image.tmdb.org/t/p/original/" + item.backdrop_path} id={item.id} className="card-img-top"></img>
-                            <div className="card-body">
-                                <h5 className="card-title text-center">{item.name}</h5>
-                                <div className="row">
-                                    <div className="card-text">
-                                        <p className="text-end"> {item.first_air_date}  <svg id={"Tstar" + item.id} onClick={handleClickStar} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor yellow" style={{ backgroundcolor: "yellow" }} className="bi bi-star star active" viewBox="0 0 16 16">
-                                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
-                                        </svg> {item.vote_average} </p>
+                                <div id={item.id} key={item.name} className="card border-dark mb-3">
+                                    <img onClick={handleClickTv} src={"https://image.tmdb.org/t/p/original/" + item.backdrop_path} id={item.id} className="card-img-top"></img>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-center">{item.name}</h5>
+                                        <div className="row">
+                                            <div className="card-text">
+                                                <p className="text-end"> {item.first_air_date}  <svg id={"Tstar" + item.id} onClick={handleClickStar} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor yellow" style={{ backgroundcolor: "yellow" }} className="bi bi-star star active" viewBox="0 0 16 16">
+                                                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
+                                                </svg> {item.vote_average} </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        )))
                 ))}
             </div>
         </div>
 
         < div className="container" >
             <div className="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
-                {movies.map((item, index) => (
-                    <div className="col-sm-6 mb-3 mb-sm-0">
 
-                        <div key={item.title} className="card border-dark mb-3">
-                            <img onClick={handleClickMovie} id={item.id} src={"https://image.tmdb.org/t/p/original/" + item.backdrop_path} className="card-img-top"></img>
-                            <div className="card-body">
-                                <h5 className="card-title text-center">{item.title}</h5>
-                                <div className="row">
-                                    <div className="card-text">
-                                        <p className="text-end"> {item.release_date}  <svg id={"Mstar" + item.id} onClick={handleClickStar} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor yellow" style={{ backgroundcolor: "yellow" }} name="Movie" className="bi bi-star star active" viewBox="0 0 16 16">
-                                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
-                                        </svg> {item.vote_average} </p>
+                {movies.map((item, index) => (
+                    favorites.map((fav, i) => (
+                        fav.id === item.id && fav.type == "movie" && (
+                            <div className="col-sm-6 mb-3 mb-sm-0">
+                                <div key={item.title} className="card border-dark mb-3">
+                                    <img onClick={handleClickMovie} id={item.id} src={"https://image.tmdb.org/t/p/original/" + item.backdrop_path} className="card-img-top"></img>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-center">{item.title}</h5>
+                                        <div className="row">
+                                            <div className="card-text">
+                                                <p className="text-end"> {item.release_date}  <svg id={"Mstar" + item.id} onClick={handleClickStar} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor yellow" style={{ backgroundcolor: "yellow" }} name="Movie" className="bi bi-star star active" viewBox="0 0 16 16">
+                                                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z" />
+                                                </svg> {item.vote_average} </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        )))
                 ))}
             </div>
         </div>
